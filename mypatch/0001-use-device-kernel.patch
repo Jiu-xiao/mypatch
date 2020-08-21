@@ -1,0 +1,39 @@
+From b0d44ae2aac5d6797af6b5169d20026cb4e9d6d1 Mon Sep 17 00:00:00 2001
+From: Jiu-xiao <2592509183@qq.com>
+Date: Thu, 20 Aug 2020 13:11:12 +0800
+Subject: [PATCH 1/1] use-device-kernel
+
+---
+ cryptfshw/1.0/Android.bp      | 2 +-
+ cryptfshw/1.0/qsee/Android.bp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/cryptfshw/1.0/Android.bp b/cryptfshw/1.0/Android.bp
+index fe511ff..6157075 100644
+--- a/cryptfshw/1.0/Android.bp
++++ b/cryptfshw/1.0/Android.bp
+@@ -21,7 +21,7 @@ cc_library_static {
+         "CryptfsHwUtils.cpp",
+     ],
+     export_include_dirs: ["."],
+-    header_libs: ["generated_kernel_headers"],
++    header_libs: ["device_kernel_headers"],
+     shared_libs: [
+         "libbase",
+         "libhidlbase",
+diff --git a/cryptfshw/1.0/qsee/Android.bp b/cryptfshw/1.0/qsee/Android.bp
+index 3e4f026..6a05c80 100644
+--- a/cryptfshw/1.0/qsee/Android.bp
++++ b/cryptfshw/1.0/qsee/Android.bp
+@@ -38,7 +38,7 @@ cc_binary {
+             },
+         },
+     },
+-    header_libs: ["generated_kernel_headers"],
++    header_libs: ["device_kernel_headers"],
+     shared_libs: [
+         "libbase",
+         "libdl",
+-- 
+2.17.1
+

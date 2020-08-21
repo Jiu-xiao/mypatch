@@ -1,0 +1,64 @@
+From 8911d18d01bb8dd538cbf9beba1df45f61c35978 Mon Sep 17 00:00:00 2001
+From: Jiangli Liu <jiangli.liu@mediatek.com>
+Date: Fri, 28 Jun 2019 15:44:10 +0800
+Subject: [PATCH] Add synchronized lock when set call state ANSWERED
+
+Root cause:
+When user answer an incoming call, call state will be changed from
+RINGING to ANSWERED, then changed from ANSWERED to ACTIVE.
+CallsManager set call state ANSWERED and ACTIVE in different threads.
+If CallsManager set the call state ANSWERED and ACTIVE quickly,
+sometimes start to set state ACTIVE when setting ANSWERED is running,
+This can lead to confusion in the state of the call,
+state ACTIVE maybe not set successfully.
+
+solution:
+Add synchronized lock when set call state ANSWERED, this ensures that
+setting ANSWERED succeeds first, and then start to set ACTIVE.
+
+Bug: 136984649
+Test: ran the CTS telecom test 100 times and it passed 100 times.
+Change-Id: I953f269086e0f9370bf834284f7504d78323a1d6
+(cherry picked from commit 16ce588a32bbeb1fc6280b011bd2f279b912a560)
+---
+ .../android/server/telecom/CallsManager.java  | 26 ++++++++++---------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/src/com/android/server/telecom/CallsManager.java b/src/com/android/server/telecom/CallsManager.java
+index f7e79582..959e13ef 100644
+--- a/src/com/android/server/telecom/CallsManager.java
++++ b/src/com/android/server/telecom/CallsManager.java
+@@ -4535,19 +4535,21 @@ public void performAction() {
+ 
+         @Override
+         public void performAction() {
+-            Log.d(this, "perform answer call for %s, videoState = %d", mCall, mVideoState);
+-            for (CallsManagerListener listener : mListeners) {
+-                listener.onIncomingCallAnswered(mCall);
+-            }
++            synchronized (mLock) {
++                Log.d(this, "perform answer call for %s, videoState = %d", mCall, mVideoState);
++                for (CallsManagerListener listener : mListeners) {
++                    listener.onIncomingCallAnswered(mCall);
++                }
+ 
+-            // We do not update the UI until we get confirmation of the answer() through
+-            // {@link #markCallAsActive}.
+-            mCall.answer(mVideoState);
+-            if (mCall.getState() == CallState.RINGING) {
+-                setCallState(mCall, CallState.ANSWERED, "answered");
+-            }
+-            if (isSpeakerphoneAutoEnabledForVideoCalls(mVideoState)) {
+-                mCall.setStartWithSpeakerphoneOn(true);
++                // We do not update the UI until we get confirmation of the answer() through
++                // {@link #markCallAsActive}.
++                mCall.answer(mVideoState);
++                if (mCall.getState() == CallState.RINGING) {
++                    setCallState(mCall, CallState.ANSWERED, "answered");
++                }
++                if (isSpeakerphoneAutoEnabledForVideoCalls(mVideoState)) {
++                    mCall.setStartWithSpeakerphoneOn(true);
++                }
+             }
+         }
+     }

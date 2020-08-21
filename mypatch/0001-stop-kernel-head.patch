@@ -1,0 +1,41 @@
+From 6b9b1f4a40c2a369de494e2235e268391f1585e3 Mon Sep 17 00:00:00 2001
+From: Jiu-xiao <2592509183@qq.com>
+Date: Thu, 20 Aug 2020 13:09:20 +0800
+Subject: [PATCH 1/1] stop-kernel-head
+
+---
+ build/soong/Android.bp | 20 --------------------
+ 1 file changed, 20 deletions(-)
+
+diff --git a/build/soong/Android.bp b/build/soong/Android.bp
+index eb239a9..5f4f423 100644
+--- a/build/soong/Android.bp
++++ b/build/soong/Android.bp
+@@ -23,24 +23,4 @@ bootstrap_go_package {
+     pluginFor: ["soong_build"],
+ }
+ 
+-aosp_generator {
+-    name: "generated_kernel_includes",
+ 
+-    // The headers make command
+-    cmd: "$(PATH_OVERRIDE_SOONG) $(KERNEL_MAKE_CMD) $(KERNEL_MAKE_FLAGS) -C $(TARGET_KERNEL_SOURCE) O=$(KERNEL_BUILD_OUT_PREFIX)$(genDir) ARCH=$(KERNEL_ARCH) $(KERNEL_CROSS_COMPILE) headers_install",
+-
+-    // Directories that can be imported by a cc_* module generated_headers property
+-    export_include_dirs: ["usr/include", "usr/techpack/audio/include"],
+-
+-    // Sources for dependency tracking
+-    dep_root: "$(TARGET_KERNEL_SOURCE)",
+-    dep_files: [ "Makefile", "include/**/*", "arch/$(KERNEL_ARCH)/include/**/*", "techpack/audio/include/**/*"],
+-}
+-
+-cc_library_headers {
+-    name: "generated_kernel_headers",
+-    generated_headers: ["generated_kernel_includes"],
+-    export_generated_headers: ["generated_kernel_includes"],
+-    vendor_available: true,
+-    recovery_available: true,
+-}
+-- 
+2.17.1
+

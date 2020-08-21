@@ -1,0 +1,35 @@
+From 97bc04fc2130ef69d7be909b9b680d40bfa50a48 Mon Sep 17 00:00:00 2001
+From: jhenrique09 <jhenrique09.mcz@hotmail.com>
+Date: Fri, 27 Mar 2020 16:55:56 -0300
+Subject: [PATCH] [2/4] Port face unlock feature
+
+Build face unlock for arm64 devices
+
+Also add a flag to opt-out
+
+Change-Id: I9d4bb7174d28ca067665893a8096b3176a5aa7a6
+---
+ config/common.mk | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/config/common.mk b/config/common.mk
+index 3e658c4c..ba15e7e2 100644
+--- a/config/common.mk
++++ b/config/common.mk
+@@ -77,6 +77,16 @@ DEVICE_PACKAGE_OVERLAYS += \
+     vendor/aosp/overlay/common \
+     vendor/aosp/overlay/dictionaries
+ 
++# Face Unlock
++TARGET_FACE_UNLOCK_SUPPORTED := false
++ifneq ($(TARGET_DISABLE_ALTERNATIVE_FACE_UNLOCK), true)
++PRODUCT_PACKAGES += \
++    FaceUnlockService
++TARGET_FACE_UNLOCK_SUPPORTED := true
++endif
++PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
++    ro.face.moto_unlock_service=$(TARGET_FACE_UNLOCK_SUPPORTED)
++
+ PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/aosp/overlay
+ 
+ # Power whitelist

@@ -1,0 +1,17 @@
+Repo	Branch	Updated	Size	CR	V
+[2/4] Port face unlock feature
+ 
+Abandoned
+ Barry Allen	--	AospExtended/platform_vendor_aosp	10.x (motofaceunlock)	Apr 19	S		
+[4/4] Port face unlock feature
+ 
+Abandoned
+ Barry Allen	--	AospExtended/platform_packages_apps_Settings	10.x (motofaceunlock)	Apr 19	L		
+[3/4] Port face unlock feature
+ 
+Abandoned
+ Barry Allen	--	AospExtended/platform_frameworks_base	10.x (motofaceunlock)	Apr 19	L	+1	
+fwb: Guard some functions against face unlock
+ 
+Abandoned
+ Barry Allen	--	AospExtended/platform_frameworks_base	10.x (motofaceunlock)	Apr 19	S	
